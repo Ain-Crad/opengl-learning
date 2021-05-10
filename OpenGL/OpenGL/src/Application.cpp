@@ -21,6 +21,8 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "tests/TestClearColor.h"
+
 int main(void) {
 	GLFWwindow* window;
 
@@ -110,6 +112,8 @@ int main(void) {
 		glm::vec3 translationA(200, 200, 0);
 		glm::vec3 translationB(400, 400, 0);
 
+		test::TestClearColor test;
+
 		float r = 0.0f;
 		float increment = 0.05f;
 		/* Loop until the user closes the window */
@@ -117,12 +121,16 @@ int main(void) {
 		{
 			/* Render here */
 			renderer.Clear();
+			
+			test.OnUpdate(0.0f);
+			test.OnRender();
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			test.OnImGuiRender();
 
 			{
 				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
@@ -141,7 +149,6 @@ int main(void) {
 			}
 
 
-
 			if (r > 1.0f)
 				increment = -0.05f;
 			else if (r < 0.0f)
@@ -153,9 +160,9 @@ int main(void) {
 				static float f = 0.0f;
 				static int counter = 0;
 
-				ImGui::Begin("Hello, world!");  // Create a window called "Hello, world!" and append into it.
-				ImGui::SliderFloat3("floatA", &translationA.x, 0.0f, 960.0f);
-				ImGui::SliderFloat3("floatB", &translationB.x, 0.0f, 960.0f);
+				ImGui::Begin("Hello, world!");
+				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
+				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				ImGui::End();
 			}
