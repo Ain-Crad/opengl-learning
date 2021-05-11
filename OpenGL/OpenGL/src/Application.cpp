@@ -112,6 +112,12 @@ int main(void) {
 		glm::vec3 translationA(200, 200, 0);
 		glm::vec3 translationB(400, 400, 0);
 
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+
 		test::TestClearColor test;
 
 		float r = 0.0f;
@@ -130,7 +136,21 @@ int main(void) {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			if (currentTest) {
+				currentTest->OnUpdate(0.0);
+				currentTest->OnRender();
+				ImGui::Begin("Test");
+				if (currentTest != testMenu && ImGui::Button("<-")) {
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
+			}
+
+			ImGui::Begin("BackGround Color");
 			test.OnImGuiRender();
+			ImGui::End();
 
 			{
 				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
@@ -176,6 +196,10 @@ int main(void) {
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
+
+		delete currentTest;
+		if (currentTest != testMenu)
+			delete testMenu;
 	}
 
 	// Cleanup

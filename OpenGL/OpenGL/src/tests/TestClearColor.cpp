@@ -21,7 +21,5 @@ void test::TestClearColor::OnRender(){
 }
 
 void test::TestClearColor::OnImGuiRender(){
-	ImGui::Begin("BackGround Color");
 	ImGui::ColorEdit4("Clear color", m_ClearColor);
-	ImGui::End();
 }
